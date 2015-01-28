@@ -485,10 +485,10 @@ var Demo = function() {
 
    return {
       init: function() {
-         runDemoForms();
+         //runDemoForms();
          runDemoTopbar();
-         runDemoSettings();
-         runDemoCache();
+         //runDemoSettings();
+         //runDemoCache();
          runSidebarVector();
          runFullscreenDemo();
       }

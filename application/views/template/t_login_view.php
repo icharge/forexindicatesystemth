@@ -56,9 +56,9 @@
 
 						<div class="col-xs-6 text-right va-b pr5">
 							<div class="login-links">
-								<a href="#" class="active" title="Login">Login</a>
+								<?=anchor('auth/login', 'Login', 'class="active" title="Login"')?>
 								<span class="text-white"> | </span>
-								<a href="#" class="" title="Register">Register</a>
+								<?=anchor('auth/register', 'Register', 'title="Register"')?>
 							</div>
 
 						</div>
@@ -73,7 +73,14 @@
 						</div>
 
 						<!-- end .form-header section -->
-						<form method="post" action="http://admindesigns.com/" id="contact">
+						<?php
+						$attr = array(
+							'name' => 'login',
+							'role' => 'form',
+							'method' => 'post'
+							);
+						echo form_open($formlink, $attr);
+						?>
 							<div class="panel-body bg-light p30">
 								<div class="row">
 									<div class="col-sm-7 pr30">
@@ -109,7 +116,7 @@
 										<div class="section">
 											<label for="password" class="field-label text-muted fs18 mb10">Password</label>
 											<label for="password" class="field prepend-icon">
-												<input type="text" name="password" id="password" class="gui-input" placeholder="Enter password">
+												<input type="password" name="password" id="password" class="gui-input" placeholder="Enter password">
 												<label for="password" class="field-icon"><i class="fa fa-lock"></i>
 												</label>
 											</label>

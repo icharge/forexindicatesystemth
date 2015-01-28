@@ -5,7 +5,7 @@ class Auth extends CI_Controller {
 	public function __construct()
 	{
 		parent::__construct();
-		// $this->load->model('Users_model','Users');
+		$this->load->model('Users_model','Users');
 	}
 
 	public function index()
@@ -15,8 +15,8 @@ class Auth extends CI_Controller {
 
 	public function login()
 	{
-
-		$this->load->view('template/t_login_view');
+		$data['formlink'] = "auth/dologin";
+		$this->load->view('template/t_login_view', $data);
 	}
 
 	public function dologin()
