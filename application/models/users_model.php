@@ -26,8 +26,8 @@ class Users_model extends CI_Model {
 		$query = $this->db
 			->limit(1)
 			->select('role')
-			->get_where('users', $cause);
-		if ($this->db->_error_number() > 0) return "notfound";
+			->get_where('Members', $cause);
+		if ($this->db->error()['code'] > 0) return "notfound";
 		if ($query->num_rows() > 0) {
 			$ret = $query->result_array()[0]['role'];
 			return $ret;
@@ -40,49 +40,25 @@ class Users_model extends CI_Model {
 	{
 		switch ($role) {
 			case 'admin':
-			$fields = array(
-				'users.id', 'admin_id', 'role', 'username', 'name', 'lname', 
-				);
-			$cause = array('username' => $username);
-			$query = $this->db
-				->limit(1)
-				->select($fields)
-				->join('admins', 'admins.id = users.id', 'LEFT')
-				->get_where('users', $cause)
-				->row_array();
-			//die($this->db->last_query());
-			return $query;
-			break;
+				$cause = array('username' => $username);
+				$query = $this->db
+					->limit(1)
+					->select('*')
+					->get_where('Members', $cause)
+					->row_array();
+				//die($this->db->last_query());
+				return $query;
+				break;
 			
-			case 'teacher':
-			$fields = array(
-				'users.id', 'tea_id', 'role', 'username', 'name', 'lname', 
-				'fac_id'
-				);
-			$cause = array('username' => $username);
-			$query = $this->db
-				->limit(1)
-				->select($fields)
-				->join('teachers', 'teachers.id = users.id', 'LEFT')
-				->get_where('users', $cause)
-				->row_array();
-			return $query;
-			break;
-
-			case 'student':
-			$fields = array(
-				'users.id', 'stu_id', 'role', 'username', 'name', 'lname', 
-				'birth', 'gender', 'year', 'fac_id', 'branch_id'
-				);
-			$cause = array('username' => $username);
-			$query = $this->db
-				->limit(1)
-				->select($fields)
-				->join('students', 'students.id = users.id', 'LEFT')
-				->get_where('users', $cause)
-				->row_array();
-			return $query;
-			break;
+			case 'member':
+				$cause = array('username' => $username);
+				$query = $this->db
+					->limit(1)
+					->select('*')
+					->get_where('Members', $cause)
+					->row_array();
+				return $query;
+				break;
 
 			default:
 				# code...
@@ -104,7 +80,7 @@ class Users_model extends CI_Model {
 				->limit(1)
 				->select($fields)
 				->join('admins', 'admins.id = users.id', 'LEFT')
-				->get_where('users', $cause)
+				->get_where('Members', $cause)
 				->row_array();
 			//die($this->db->last_query());
 			return $query;
@@ -315,7 +291,7 @@ class Users_model extends CI_Model {
 		$this->db->trans_begin();
 		# Insert Users
 		$query_user = $this->db->insert('users', $userData);
-		$errno = $this->db->_error_number();
+		$errno = $this->db->error()['code'];
 		// die(var_dump($errno));
 		# Get ID
 		$cause = array(
@@ -343,24 +319,17 @@ class Users_model extends CI_Model {
 		}
 	}
 
-	function updateUser($table, $userData, $dataSet, $uid)
+	function updateUser($userData, $id)
 	{
-		$this->db->trans_begin();
-		if (isset($userData)) 
-		{
-			$query = $this->db->update('users', $userData, array('id'=>$uid));
-			$errno = $this->db->_error_number();
-		}
-		$query = $this->db->update($table, $dataSet, array('id'=>$uid));
-		$this->db->trans_complete();
-		if ($this->db->trans_status())
-		{
-			return 0;
-		}
-		else
-		{
-			return $errno;
-		}
+		$query = $this->db->update('Members', $userData, array('id'=>$id));
+	}
+
+	function updateToken($id)
+	{
+		$token = md5(md5($id.now()).now()).md5(date('Y-m-d'));
+		$data['token'] = $token;
+		$this->updateUser($data, $id);
+		return $token;
 	}
 
 	function btnUserfield()

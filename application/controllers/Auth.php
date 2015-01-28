@@ -21,102 +21,65 @@ class Auth extends CI_Controller {
 
 	public function dologin()
 	{
-		# Load View
-		$coursesNum = $this->Courses->countCourseList();
-		$headerData['coursesNum'] = $coursesNum;
-		$headerData['statbar'] = true;
-		$headerData['title'] = "Authentication";
-		$headerData['subtitle'] = "การเข้าสู่ระบบ";
-		
-		$this->load->view('frontend/t_header_view', $headerData);
 
 		# Login Process
-		$this->form_validation->set_rules('username', 'ชื่อผู้ใช้', 'required');
+		$this->form_validation->set_rules('username', 'ชื่อผู้ใช้', 'trim|required');
 		$this->form_validation->set_rules('password', 'รหัสผ่าน', 'required');
 		$this->form_validation->set_message('required', 'คุณต้องกรอก %s');
 		// $this->form_validation->set_error_delimiters('<span style="color: red">', '</span>');
-		if ($this->input->post('submit'))
+		if (is_array($this->input->post()))
 		{
 			$username = $this->input->post('username');(is_array($username)?$username=$username[0]:true);
 			$password = $this->input->post('password');(is_array($password)?$password=$password[0]:true);
 			if ($this->form_validation->run())
 			{
 				$check = $this->Users->_checkuser($username, $password);
+
+				$userinfo = $this->Users->_getUserInfo($username, $check);
+				// Session
+				$data = array(
+					'id' => $userinfo['id'],
+					'username' => $username,
+					'fullname' => $userinfo['title'].$userinfo['name']." ".$userinfo['surname'],
+					'title' => $userinfo['title'],
+					'nick' => $userinfo['nick'],
+					'pic' => $userinfo['picture'],
+					'name' => $userinfo['name'],
+					'surname' => $userinfo['surname'],
+					'role' => $userinfo['role'],
+					'joindate' => $userinfo['joinDate'],
+					'status' => $userinfo['status'],
+					'token' => $this->Users->updateToken($userinfo['id']),
+					'logged' => true
+				);
+				$this->session->set_userdata($data);
+
 				switch ($check) 
 				{
 					case 'admin':
-						// Admin table ??
-						$userinfo = $this->Users->_getUserInfo($username, $check);
-						$data = array(
-							'id' => $userinfo['id'],
-							'uid' => $userinfo['admin_id'],
-							'username' => $username,
-							'fullname' => $userinfo['name']." ".$userinfo['lname'],
-							'fname' => $userinfo['name'],
-							'lname' => $userinfo['lname'],
-							'role' => $userinfo['role'],
-							'logged' => true
-						);
-						$this->session->set_userdata($data);
 						redirect('admin');
 						break;
 					
-					case 'teacher':
-						$userinfo = $this->Users->_getUserInfo($username, $check);
-						$data = array(
-							'id' => $userinfo['id'],
-							'uid' => $userinfo['tea_id'],
-							'username' => $username,
-							'fullname' => $userinfo['name']." ".$userinfo['lname'],
-							'fname' => $userinfo['name'],
-							'lname' => $userinfo['lname'],
-							'faculty' => $userinfo['faculty'],
-							'role' => $userinfo['role'],
-							'logged' => true
-						);
-						$this->session->set_userdata($data);
-						redirect('teacher');
-						break;
-
-					case 'student':
-						$userinfo = $this->Users->_getUserInfo($username, $check);
-						$data = array(
-							'id' => $userinfo['id'],
-							'uid' => $userinfo['stu_id'],
-							'username' => $username,
-							'fullname' => $userinfo['name']." ".$userinfo['lname'],
-							'fname' => $userinfo['name'],
-							'lname' => $userinfo['lname'],
-							'birth' => $userinfo['birth'],
-							'gender' => $userinfo['gender'],
-							'year' => $userinfo['year'],
-							'faculty' => $userinfo['faculty'],
-							'branch' => $userinfo['branch'],
-							'role' => $userinfo['role'],
-							'logged' => true
-						);
-						$this->session->set_userdata($data);
-						redirect('');
+					case 'member':
+						redirect('member');
 						break;
 
 					case 'notfound':
-						$data['msg_error'] = 'ชื่อผู้ใช้หรือรหัสผ่านไม่ถูกต้อง';
-						// $this->session->set_flashdata('msg_error', 'ชื่อผู้ใช้หรือรหัสผ่านไม่ถูกต้อง');
-						$this->load->view('frontend/login_view', $data);
+						$this->session->set_flashdata('msg_error', 'ชื่อผู้ใช้หรือรหัสผ่านไม่ถูกต้อง');
+						redirect('auth/login');
 						break;
 
 					default:
-						$data['msg_error'] = 'Error';
-						$this->load->view('frontend/login_view', $data);
+					$this->session->set_flashdata('msg_error', 'Error');
+						redirect('auth/login');
 				}
 			} else {
-				$data['msg_error'] = 'กรุณากรอกข้อมูลให้ครบ';
-				$this->load->view('frontend/login_view', $data);
+				$this->session->set_flashdata('msg_error', 'กรุณากรอกข้อมูลให้ครบ');
+				redirect('auth/login');
 			}
 		} else {
 			redirect('auth/login');
 		}
-		$this->load->view('frontend/t_footer_view');
 	}
 
 	public function logout()

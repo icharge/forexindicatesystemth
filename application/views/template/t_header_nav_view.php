@@ -176,8 +176,9 @@
 								<span class="fa fa-gear pr5"></span> Account Settings </a>
 						</li>
 						<li class="br-t of-h">
-							<a href="#" class="fw600 p12 animated animated-short fadeInDown">
-								<span class="fa fa-power-off pr5"></span> Logout </a>
+							<?=anchor('auth/logout', 
+								'<span class="fa fa-power-off pr5"></span> Logout',
+								'class="fw600 p12 animated animated-short fadeInDown"')?>
 						</li>
 					</ul>
 				</li>

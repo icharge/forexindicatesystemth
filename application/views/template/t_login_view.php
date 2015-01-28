@@ -85,6 +85,14 @@
 								<div class="row">
 									<div class="col-sm-7 pr30">
 
+							<?php if ($this->session->flashdata('msg_error')) { ?>
+										<div class="section row">
+											<div class="col-md-12">
+												<?=$this->session->flashdata('msg_error')?>
+											</div>
+										</div>
+
+							<?php } else { ?>
 										<div class="section row hidden">
 											<div class="col-md-4">
 												<a href="#" class="button btn-social facebook span-left mr5 btn-block">
@@ -102,11 +110,12 @@
 													</span>Google+</a>
 											</div>
 										</div>
+							<?php } ?>
 
 										<div class="section">
 											<label for="username" class="field-label text-muted fs18 mb10">Username</label>
 											<label for="username" class="field prepend-icon">
-												<input type="text" name="username" id="username" class="gui-input" placeholder="Enter username">
+												<input type="text" name="username" id="username" class="gui-input" placeholder="Enter username" autocomplete="forexuser">
 												<label for="username" class="field-icon"><i class="fa fa-user"></i>
 												</label>
 											</label>
@@ -116,9 +125,10 @@
 										<div class="section">
 											<label for="password" class="field-label text-muted fs18 mb10">Password</label>
 											<label for="password" class="field prepend-icon">
-												<input type="password" name="password" id="password" class="gui-input" placeholder="Enter password">
+												<input type="password" name="password" id="password" class="gui-input" placeholder="Enter password" autocomplete="forexpass">
 												<label for="password" class="field-icon"><i class="fa fa-lock"></i>
 												</label>
+												<?=form_error('username', '<span class="label label-danger">', '</span>');?>
 											</label>
 										</div>
 										<!-- end section -->

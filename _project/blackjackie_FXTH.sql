@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: localhost
--- Generation Time: Jan 27, 2015 at 05:28 PM
+-- Generation Time: Jan 28, 2015 at 06:22 AM
 -- Server version: 5.6.20
 -- PHP Version: 5.5.15
 
@@ -28,6 +28,8 @@ SET time_zone = "+00:00";
 
 CREATE TABLE IF NOT EXISTS `Members` (
 `id` int(11) NOT NULL,
+  `username` varchar(64) NOT NULL,
+  `password` varchar(128) NOT NULL,
   `title` varchar(20) NOT NULL,
   `name` varchar(128) NOT NULL,
   `surname` varchar(64) NOT NULL,
@@ -35,8 +37,16 @@ CREATE TABLE IF NOT EXISTS `Members` (
   `picture` varchar(128) DEFAULT NULL,
   `joinDate` datetime NOT NULL,
   `role` varchar(10) NOT NULL,
-  `status` varchar(10) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+  `status` varchar(10) NOT NULL,
+  `token` varchar(128) NOT NULL
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=2 ;
+
+--
+-- Dumping data for table `Members`
+--
+
+INSERT INTO `Members` (`id`, `username`, `password`, `title`, `name`, `surname`, `nick`, `picture`, `joinDate`, `role`, `status`, `token`) VALUES
+(1, 'admin', '81dc9bdb52d04dc20036dbd8313ed055', 'นาย', 'นรภัทร', 'นิ่มมณี', 'ชาร์จ', NULL, '2015-01-28 11:13:16', 'admin', 'active', '92665ca0afe9dcdb853c71e55032748ae2daa9f9604fc7b41d8d3c22b4057d62');
 
 -- --------------------------------------------------------
 
@@ -89,7 +99,7 @@ CREATE TABLE IF NOT EXISTS `Training_Detail` (
 -- Indexes for table `Members`
 --
 ALTER TABLE `Members`
- ADD PRIMARY KEY (`id`);
+ ADD PRIMARY KEY (`id`), ADD UNIQUE KEY `username` (`username`);
 
 --
 -- Indexes for table `Member_Accounts`
@@ -117,7 +127,7 @@ ALTER TABLE `Training_Detail`
 -- AUTO_INCREMENT for table `Members`
 --
 ALTER TABLE `Members`
-MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+MODIFY `id` int(11) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=2;
 --
 -- AUTO_INCREMENT for table `Member_Accounts`
 --
