@@ -1,91 +1,87 @@
-<?php if ( ! defined('BASEPATH')) exit('No direct script access allowed');
+<?php
 
-class Auth extends CI_Controller {
+if (!defined('BASEPATH'))
+    exit('No direct script access allowed');
 
-	public function __construct()
-	{
-		parent::__construct();
-		$this->load->model('Users_model','Users');
-	}
+class Auth extends MY_Controller {
 
-	public function index()
-	{
-		redirect('main');
-	}
+    public function __construct() {
+        parent::__construct();
 
-	public function login()
-	{
-		$data['formlink'] = "auth/dologin";
-		$this->load->view('template/t_login_view', $data);
-	}
+        // Theme config
+        $this->layout = "layouts/backend_layout";
+        $this->stylesheets = array(
+            asset_url()."/skin/default_skin/css/theme.css",
+            asset_url().'/admin-tools/admin-forms/css/admin-forms.css',
+        );
+        $this->javascripts = array(
+            asset_url().'/vendor/jquery/jquery-1.11.1.min.js',
+            asset_url().'/vendor/jquery/jquery_ui/jquery-ui.min.js',
+            asset_url().'/js/bootstrap/bootstrap.min.js',
+            asset_url().'/js/pages/login/EasePack.min.js',
+            asset_url().'/js/pages/login/rAF.js',
+            asset_url().'/js/pages/login/TweenLite.min.js',
+            asset_url().'/js/pages/login/login.js',
+            asset_url().'/js/utility/utility.js',
+            asset_url().'/js/main.js',
+            asset_url().'/js/demo.js',
+        );
+        // Load model
+        $this->load->model('users_model');
+    }
 
-	public function dologin()
-	{
+    protected function DoOnNotLogged() {
+        return;
+    }
 
-		# Login Process
-		$this->form_validation->set_rules('username', 'ชื่อผู้ใช้', 'trim|required');
-		$this->form_validation->set_rules('password', 'รหัสผ่าน', 'required');
-		$this->form_validation->set_message('required', 'คุณต้องกรอก %s');
-		// $this->form_validation->set_error_delimiters('<span style="color: red">', '</span>');
-		if (is_array($this->input->post()))
-		{
-			$username = $this->input->post('username');(is_array($username)?$username=$username[0]:true);
-			$password = $this->input->post('password');(is_array($password)?$password=$password[0]:true);
-			if ($this->form_validation->run())
-			{
-				$check = $this->Users->_checkuser($username, $password);
+    public function index() {
+        redirect('auth/login');
+    }
 
-				$userinfo = $this->Users->_getUserInfo($username, $check);
-				// Session
-				$data = array(
-					'id' => $userinfo['id'],
-					'username' => $username,
-					'fullname' => $userinfo['title'].$userinfo['name']." ".$userinfo['surname'],
-					'title' => $userinfo['title'],
-					'nick' => $userinfo['nick'],
-					'pic' => $userinfo['picture'],
-					'name' => $userinfo['name'],
-					'surname' => $userinfo['surname'],
-					'role' => $userinfo['role'],
-					'joindate' => $userinfo['joinDate'],
-					'status' => $userinfo['status'],
-					'token' => $this->Users->updateToken($userinfo['id']),
-					'logged' => true
-				);
-				$this->session->set_userdata($data);
+    public function login() {
+        $this->layout = "layouts/backend_login_layout";
+        $this->pageTitle = "การเข้าสู่ระบบ";
+        $this->render();
+    }
 
-				switch ($check) 
-				{
-					case 'admin':
-						redirect('admin');
-						break;
-					
-					case 'member':
-						redirect('member');
-						break;
+    public function dologin() {
+        # Login Process
+        $this->form_validation->set_rules('username', 'ชื่อผู้ใช้', 'required');
+        $this->form_validation->set_rules('password', 'รหัสผ่าน', 'required');
+        $this->form_validation->set_message('required', 'คุณต้องกรอก %s');
+        // $this->form_validation->set_error_delimiters('<span style="color: red">', '</span>');
+        if ($this->input->post()) {
+            $username = $this->input->post('username');
+            (is_array($username) ? $username = $username[0] : true);
+            $password = $this->input->post('password');
+            (is_array($password) ? $password = $password[0] : true);
+            if ($this->form_validation->run()) {
+                $userData = $this->users_model->getLogin($username, $password);
+                if ($userData) {
+                    $data = $userData;
+                    $data = array_merge($data, array('logged' => true));
 
-					case 'notfound':
-						$this->session->set_flashdata('msg_error', 'ชื่อผู้ใช้หรือรหัสผ่านไม่ถูกต้อง');
-						redirect('auth/login');
-						break;
+                    $this->session->set_userdata($data);
+                    redirect('admin/index');
+                } else {
+                    $msg_error = 'ชื่อหรือรหัสผ่านไม่ถูกต้อง';
+                }
+            } else {
+                $msg_error = 'กรุณากรอกข้อมูลให้ครบ';
+            }
+            $this->session->set_flashdata('msg', $msg_error);
+            redirect('auth/login');
+        } else {
+            redirect('auth/login');
+        }
+    }
 
-					default:
-					$this->session->set_flashdata('msg_error', 'Error');
-						redirect('auth/login');
-				}
-			} else {
-				$this->session->set_flashdata('msg_error', 'กรุณากรอกข้อมูลให้ครบ');
-				redirect('auth/login');
-			}
-		} else {
-			redirect('auth/login');
-		}
-	}
-
-	public function logout()
-	{
-		$this->session->sess_destroy();
-		redirect('main');
-	}
+    public function logout() {
+        $this->session->sess_destroy();
+        redirect('main');
+    }
 
 }
+
+/* End of file auth.php */
+/* Location: ./application/controllers/auth.php */
