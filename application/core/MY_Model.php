@@ -14,6 +14,7 @@ class MY_Model extends CI_Model {
         if ($this->table == endsWith($this->table, "_model")) {
             $this->table = trim($this->table, "_model");
         }
+        $this->table = strtolower($this->table);
         $this->load->database();
     }
 

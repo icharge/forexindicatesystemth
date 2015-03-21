@@ -32,14 +32,12 @@ class Admin extends MY_Controller {
 
     function index() {
         // Dashboard
-        $this->pageTitle = "Dashboard";
-        $content = $this->load->view('backend/dashboard_view', NULL, TRUE);
-        $this->render($content);
+        redirect('Admin/members');
     }
 
     function members() {
         $this->pageTitle = "Member Management";
-
+        
         $crud = new grocery_CRUD();
         $crud->set_theme('bootstrap');
         $crud
@@ -60,9 +58,9 @@ class Admin extends MY_Controller {
                 ->display_as('status', 'สถานะ');
 
         //$crud->unset_columns('prdcate_id');
-        $crud->callback_column('price', array($this, 'toBaht'));
+        //$crud->callback_column('price', array($this, 'toBaht'));
         //$crud->unset_jquery();
-
+        
         $crudoutput = $crud->unset_jquery()->render();
         // Merge JS CSS
         $this->stylesheets = array_merge($this->stylesheets, $crudoutput->css_files);

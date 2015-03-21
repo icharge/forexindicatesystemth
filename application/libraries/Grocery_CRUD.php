@@ -3822,7 +3822,7 @@ class Grocery_CRUD extends grocery_CRUD_States {
 
         if ($this->basic_model === null)
             $this->set_default_Model();
-
+        
         $this->set_basic_db_table($this->get_table());
 
         $this->_load_date_format();
