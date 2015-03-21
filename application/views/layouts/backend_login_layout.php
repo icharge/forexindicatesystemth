@@ -61,9 +61,9 @@
 
                             <div class="col-xs-6 text-right va-b pr5">
                                 <div class="login-links">
-                                    <!-- <?= anchor('auth/login', 'Login', 'class="active" title="Login"') ?>
+                                    <!-- <?= anchor('Auth/login', 'Login', 'class="active" title="Login"') ?>
                                     <span class="text-white"> | </span> -->
-                                    <?= anchor('auth/register', 'Register', 'title="Register"') ?>
+                                    <?= anchor('Auth/register', 'Register', 'title="Register"') ?>
                                 </div>
 
                             </div>
