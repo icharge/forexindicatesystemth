@@ -4,7 +4,7 @@ class Main extends CI_Controller {
 
 	public function index()
 	{
-		redirect('auth/login');
+		redirect('Auth/login');
 
 	}
 

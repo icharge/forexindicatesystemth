@@ -27,7 +27,7 @@ class Auth extends MY_Controller {
             asset_url().'/js/demo.js',
         );
         // Load model
-        $this->load->model('users_model');
+        $this->load->model('members_model', 'userm');
     }
 
     protected function DoOnNotLogged() {
@@ -35,13 +35,25 @@ class Auth extends MY_Controller {
     }
 
     public function index() {
-        redirect('auth/login');
+        redirect('Auth/login');
     }
 
     public function login() {
         $this->layout = "layouts/backend_login_layout";
         $this->pageTitle = "การเข้าสู่ระบบ";
         $this->render();
+    }
+    
+    public function register() {
+        $this->layout = "layouts/frontend_member_layout";
+        $this->pageTitle = "ลงทะเบียน";
+        
+        $this->addPushRenderData(array(
+            'registerpage' => true
+        ));
+        
+        $content = $this->load->view('frontend/register_view', NULL, TRUE);
+        $this->render($content);
     }
 
     public function dologin() {
@@ -56,13 +68,26 @@ class Auth extends MY_Controller {
             $password = $this->input->post('password');
             (is_array($password) ? $password = $password[0] : true);
             if ($this->form_validation->run()) {
-                $userData = $this->users_model->getLogin($username, $password);
+                $userData = $this->userm->getLogin($username, $password);
                 if ($userData) {
                     $data = $userData;
                     $data = array_merge($data, array('logged' => true));
 
                     $this->session->set_userdata($data);
-                    redirect('admin/index');
+                    
+                    switch ($data['role']) {
+                        case "admin":
+                            redirect('Admin/index');
+                            break;
+
+                        case "member":
+                            redirect('Member/index');
+                            break;
+                        
+                        default:
+                            break;
+                    }
+                    
                 } else {
                     $msg_error = 'ชื่อหรือรหัสผ่านไม่ถูกต้อง';
                 }
@@ -70,15 +95,57 @@ class Auth extends MY_Controller {
                 $msg_error = 'กรุณากรอกข้อมูลให้ครบ';
             }
             $this->session->set_flashdata('msg', $msg_error);
-            redirect('auth/login');
+            redirect('Auth/login');
         } else {
-            redirect('auth/login');
+            redirect('Auth/login');
+        }
+    }
+    
+    public function doregister() {
+        $this->form_validation->set_rules('username', 'ชื่อผู้ใช้', 'trim|required');
+        $this->form_validation->set_rules('password', 'รหัสผ่าน', 'required');
+        $this->form_validation->set_rules('name', 'ชื่อ', 'trim|required');
+        $this->form_validation->set_rules('surname', 'นามสกุล', 'trim|required');
+        $this->form_validation->set_rules('ib', 'เลขบัญชี', 'trim|required');
+        $this->form_validation->set_rules('ggp', 'Google+', 'trim|required');
+        $this->form_validation->set_rules('fbname', 'Facebook', 'trim|required');
+        
+        $this->form_validation->set_message('required', 'คุณต้องกรอก %s');
+        
+        if ($this->input->post()) {
+            $input = $this->input;
+            
+            $userData = array(
+                'username' => $input->post('username'),
+                'password' => $input->post('password'),
+                'name' => $input->post('name'),
+                'surname' => $input->post('surname'),
+                'member_ib' => $input->post('ib'),
+                'email' => $input->post('ggp'),
+                'fb_name' => $input->post('fbname'),
+                'join_date' => date('Y-m-d'),
+            );
+            
+            if ($this->form_validation->run()) {
+                if ($this->userm->insert($userData)) {
+                    $this->userm->update(array('status'=>1), "ib = '$userData[member_ib]'", 'ib_vip');
+                    redirect('Auth/login');
+                } else {
+                    $msg_error = 'สมัครสมาชิกไม่สำเร็จ';
+                }
+            } else {
+                $msg_error = 'กรุณากรอกข้อมูลให้ครบ';
+            }
+            $this->session->set_flashdata('msg', $msg_error);
+            redirect('Auth/register');
+        } else {
+            redirect('Auth/register');
         }
     }
 
     public function logout() {
         $this->session->sess_destroy();
-        redirect('main');
+        redirect('Main');
     }
 
 }

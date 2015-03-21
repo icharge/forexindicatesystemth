@@ -61,8 +61,8 @@
 
                             <div class="col-xs-6 text-right va-b pr5">
                                 <div class="login-links">
-                                    <?= anchor('auth/login', 'Login', 'class="active" title="Login"') ?>
-                                    <span class="text-white"> | </span>
+                                    <!-- <?= anchor('auth/login', 'Login', 'class="active" title="Login"') ?>
+                                    <span class="text-white"> | </span> -->
                                     <?= anchor('auth/register', 'Register', 'title="Register"') ?>
                                 </div>
 
@@ -79,7 +79,7 @@
 
                             <!-- end .form-header section -->
                             <?php
-                            echo form_open(site_url('auth/dologin'), 'name="login" role="form" method="post"');
+                            echo form_open(site_url('Auth/dologin'), 'name="login" role="form" method="post"');
                             ?>
                             <div class="panel-body bg-light p30">
                                 <div class="row">
@@ -137,24 +137,24 @@
                                     <div class="col-sm-5 br-l br-grey pl30">
                                         <h3 class="mb25"> Forex Indicator System Thailand:</h3>
                                         <p class="mb15">
-                                            <span class="fa fa-check text-success pr5"></span> Blah blah blah boo.</p>
+                                            <span class="fa fa-check text-success pr5"></span> สอนการลงทุนใน Forex ตั้งแต่เริ่มต้น ฟรี !!</p>
                                         <p class="mb15">
-                                            <span class="fa fa-check text-success pr5"></span> hahaha hahaha hahaha.</p>
+                                            <span class="fa fa-check text-success pr5"></span> สอนออนไลน์ ประกาศแจ้งในกลุ่ม</p>
                                         <p class="mb15">
-                                            <span class="fa fa-check text-success pr5"></span> Yo yo yo Yeah.</p>
+                                            <span class="fa fa-check text-success pr5"></span> สามารถติดตาม วีดีโอบันทึกบทวิเคราะห์</p>
                                         <p class="mb15">
-                                            <span class="fa fa-check text-success pr5"></span> Cheers !</p>
+                                            <span class="fa fa-check text-success pr5"></span> แจก indicator พร้อม สอนวิธีการตั้งค่า</p>
                                     </div>
                                 </div>
                             </div>
                             <!-- end .form-body section -->
                             <div class="panel-footer clearfix p10 ph15">
                                 <button type="submit" class="button btn-primary mr10 pull-right">Login</button>
-                                <label class="switch block switch-primary pull-left input-align mt10">
-                                    <input type="checkbox" name="remember" id="remember" checked>
-                                    <label for="remember" data-on="YES" data-off="NO"></label>
-                                    <span>Remember me</span>
-                                </label>
+                                <!--                                <label class="switch block switch-primary pull-left input-align mt10">
+                                                                    <input type="checkbox" name="remember" id="remember" checked>
+                                                                    <label for="remember" data-on="YES" data-off="NO"></label>
+                                                                    <span>Remember me</span>
+                                                                </label>-->
                             </div>
                             <!-- end .form-footer section -->
                             </form>

@@ -1,11 +1,11 @@
 -- phpMyAdmin SQL Dump
--- version 4.2.7.1
+-- version 4.2.11
 -- http://www.phpmyadmin.net
 --
--- Host: localhost
--- Generation Time: Jan 28, 2015 at 06:22 AM
--- Server version: 5.6.20
--- PHP Version: 5.5.15
+-- Host: 127.0.0.1
+-- Generation Time: Mar 21, 2015 at 11:45 AM
+-- Server version: 5.6.21
+-- PHP Version: 5.5.19
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 SET time_zone = "+00:00";
@@ -17,127 +17,131 @@ SET time_zone = "+00:00";
 /*!40101 SET NAMES utf8 */;
 
 --
--- Database: `blackjackie_FXTH`
+-- Database: `blackjackie_fxth`
 --
 
 -- --------------------------------------------------------
 
 --
--- Table structure for table `Members`
+-- Table structure for table `ib_vip`
 --
 
-CREATE TABLE IF NOT EXISTS `Members` (
+CREATE TABLE IF NOT EXISTS `ib_vip` (
+`id` int(11) NOT NULL COMMENT 'รหัส ',
+  `ib` varchar(13) NOT NULL COMMENT 'เลขบัญชี',
+  `date` date NOT NULL COMMENT 'วันที่สมัคร',
+  `status` int(11) NOT NULL DEFAULT '0' COMMENT 'สถานะใช้งาน'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `members`
+--
+
+CREATE TABLE IF NOT EXISTS `members` (
 `id` int(11) NOT NULL,
   `username` varchar(64) NOT NULL,
   `password` varchar(128) NOT NULL,
-  `title` varchar(20) NOT NULL,
   `name` varchar(128) NOT NULL,
   `surname` varchar(64) NOT NULL,
-  `nick` varchar(20) NOT NULL,
-  `picture` varchar(128) DEFAULT NULL,
-  `joinDate` datetime NOT NULL,
-  `role` varchar(10) NOT NULL,
-  `status` varchar(10) NOT NULL,
+  `fb_name` varchar(255) NOT NULL,
+  `member_ib` varchar(13) NOT NULL,
+  `email` varchar(255) NOT NULL,
+  `role` varchar(10) NOT NULL DEFAULT 'member',
+  `join_date` date NOT NULL,
+  `status` varchar(20) NOT NULL,
   `token` varchar(128) NOT NULL
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=2 ;
-
---
--- Dumping data for table `Members`
---
-
-INSERT INTO `Members` (`id`, `username`, `password`, `title`, `name`, `surname`, `nick`, `picture`, `joinDate`, `role`, `status`, `token`) VALUES
-(1, 'admin', '81dc9bdb52d04dc20036dbd8313ed055', 'นาย', 'นรภัทร', 'นิ่มมณี', 'ชาร์จ', NULL, '2015-01-28 11:13:16', 'admin', 'active', '92665ca0afe9dcdb853c71e55032748ae2daa9f9604fc7b41d8d3c22b4057d62');
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
 --
--- Table structure for table `Member_Accounts`
+-- Table structure for table `training`
 --
 
-CREATE TABLE IF NOT EXISTS `Member_Accounts` (
-`id` int(11) NOT NULL,
-  `account` varchar(10) CHARACTER SET utf8 NOT NULL,
-  `status` varchar(20) CHARACTER SET utf8 NOT NULL,
-  `member_id` int(11) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
-
--- --------------------------------------------------------
-
---
--- Table structure for table `Training`
---
-
-CREATE TABLE IF NOT EXISTS `Training` (
+CREATE TABLE IF NOT EXISTS `training` (
 `id` int(5) NOT NULL,
-  `topic` varchar(128) CHARACTER SET utf8 NOT NULL,
-  `detail` text CHARACTER SET utf8,
+  `topic` varchar(128) NOT NULL,
+  `detail` text,
   `startDate` datetime DEFAULT NULL,
   `endDate` datetime DEFAULT NULL,
   `max` int(11) NOT NULL,
-  `status` varchar(10) CHARACTER SET utf8 NOT NULL,
-  `videoUrl` text CHARACTER SET utf8,
+  `status` varchar(10) NOT NULL,
+  `videoUrl` text,
   `trainer_id` int(11) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
 --
--- Table structure for table `Training_Detail`
+-- Table structure for table `training_detail`
 --
 
-CREATE TABLE IF NOT EXISTS `Training_Detail` (
+CREATE TABLE IF NOT EXISTS `training_detail` (
   `training_id` int(5) NOT NULL,
   `member_id` int(11) NOT NULL,
   `joinDate` datetime NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 --
 -- Indexes for dumped tables
 --
 
 --
--- Indexes for table `Members`
+-- Indexes for table `ib_vip`
 --
-ALTER TABLE `Members`
- ADD PRIMARY KEY (`id`), ADD UNIQUE KEY `username` (`username`);
+ALTER TABLE `ib_vip`
+ ADD PRIMARY KEY (`id`), ADD UNIQUE KEY `ib_UNIQUE` (`ib`);
 
 --
--- Indexes for table `Member_Accounts`
+-- Indexes for table `members`
 --
-ALTER TABLE `Member_Accounts`
- ADD PRIMARY KEY (`id`), ADD UNIQUE KEY `account` (`account`);
+ALTER TABLE `members`
+ ADD PRIMARY KEY (`id`), ADD UNIQUE KEY `member_ib_UNIQUE` (`member_ib`);
 
 --
--- Indexes for table `Training`
+-- Indexes for table `training`
 --
-ALTER TABLE `Training`
+ALTER TABLE `training`
  ADD PRIMARY KEY (`id`);
 
 --
--- Indexes for table `Training_Detail`
+-- Indexes for table `training_detail`
 --
-ALTER TABLE `Training_Detail`
- ADD PRIMARY KEY (`training_id`,`member_id`);
+ALTER TABLE `training_detail`
+ ADD PRIMARY KEY (`training_id`,`member_id`), ADD KEY `fk_training_detail_training_idx` (`training_id`), ADD KEY `fk_training_detail_members1_idx` (`member_id`);
 
 --
 -- AUTO_INCREMENT for dumped tables
 --
 
 --
--- AUTO_INCREMENT for table `Members`
+-- AUTO_INCREMENT for table `ib_vip`
 --
-ALTER TABLE `Members`
-MODIFY `id` int(11) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=2;
+ALTER TABLE `ib_vip`
+MODIFY `id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'รหัส ';
 --
--- AUTO_INCREMENT for table `Member_Accounts`
+-- AUTO_INCREMENT for table `members`
 --
-ALTER TABLE `Member_Accounts`
+ALTER TABLE `members`
 MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 --
--- AUTO_INCREMENT for table `Training`
+-- AUTO_INCREMENT for table `training`
 --
-ALTER TABLE `Training`
+ALTER TABLE `training`
 MODIFY `id` int(5) NOT NULL AUTO_INCREMENT;
+--
+-- Constraints for dumped tables
+--
+
+--
+-- Constraints for table `training_detail`
+--
+ALTER TABLE `training_detail`
+ADD CONSTRAINT `fk_training_detail_members1` FOREIGN KEY (`member_id`) REFERENCES `members` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
+ADD CONSTRAINT `fk_training_detail_training` FOREIGN KEY (`training_id`) REFERENCES `training` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION;
+
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;

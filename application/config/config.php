@@ -358,8 +358,8 @@ $config['rewrite_short_tags'] = FALSE;
 $config['proxy_ips'] = '';
 
 
-$config['app_name'] = 'Sahachai Concrete Product Co.,Ltd';
-$config['app_name_th'] = 'สหชัยผลิตภัณฑ์คอนกรีต จำกัด';
+$config['app_name'] = 'Forex Indicator System Thailand';
+$config['app_name_th'] = '';
 
 /* End of file config.php */
 /* Location: ./application/config/config.php */
