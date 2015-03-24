@@ -1,1 +1,15 @@
-/nbproject/private/
+.DS_Store
+
+application/cache/*
+!application/cache/index.html
+!application/cache/.htaccess
+
+application/logs/*
+!application/logs/index.html
+!application/logs/.htaccess
+
+assets/uploads/*
+!assets/uploads/index.html
+
+nbproject
+nbproject/*

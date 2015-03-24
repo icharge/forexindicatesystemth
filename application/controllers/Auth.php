@@ -11,20 +11,20 @@ class Auth extends MY_Controller {
         // Theme config
         $this->layout = "layouts/backend_layout";
         $this->stylesheets = array(
-            asset_url()."/skin/default_skin/css/theme.css",
-            asset_url().'/admin-tools/admin-forms/css/admin-forms.css',
+            asset_url() . "/skin/default_skin/css/theme.css",
+            asset_url() . '/admin-tools/admin-forms/css/admin-forms.css',
         );
         $this->javascripts = array(
-            asset_url().'/vendor/jquery/jquery-1.11.1.min.js',
-            asset_url().'/vendor/jquery/jquery_ui/jquery-ui.min.js',
-            asset_url().'/js/bootstrap/bootstrap.min.js',
-            asset_url().'/js/pages/login/EasePack.min.js',
-            asset_url().'/js/pages/login/rAF.js',
-            asset_url().'/js/pages/login/TweenLite.min.js',
-            asset_url().'/js/pages/login/login.js',
-            asset_url().'/js/utility/utility.js',
-            asset_url().'/js/main.js',
-            asset_url().'/js/demo.js',
+            asset_url() . '/vendor/jquery/jquery-1.11.1.min.js',
+            asset_url() . '/vendor/jquery/jquery_ui/jquery-ui.min.js',
+            asset_url() . '/js/bootstrap/bootstrap.min.js',
+            asset_url() . '/js/pages/login/EasePack.min.js',
+            asset_url() . '/js/pages/login/rAF.js',
+            asset_url() . '/js/pages/login/TweenLite.min.js',
+            asset_url() . '/js/pages/login/login.js',
+            asset_url() . '/js/utility/utility.js',
+            asset_url() . '/js/main.js',
+            asset_url() . '/js/demo.js',
         );
         // Load model
         $this->load->model('members_model', 'userm');
@@ -43,15 +43,15 @@ class Auth extends MY_Controller {
         $this->pageTitle = "การเข้าสู่ระบบ";
         $this->render();
     }
-    
+
     public function register() {
         $this->layout = "layouts/frontend_member_layout";
         $this->pageTitle = "ลงทะเบียน";
-        
+
         $this->addPushRenderData(array(
             'registerpage' => true
         ));
-        
+
         $content = $this->load->view('frontend/register_view', NULL, TRUE);
         $this->render($content);
     }
@@ -74,7 +74,7 @@ class Auth extends MY_Controller {
                     $data = array_merge($data, array('logged' => true));
 
                     $this->session->set_userdata($data);
-                    
+
                     switch ($data['role']) {
                         case "admin":
                             redirect('Admin/index');
@@ -83,11 +83,10 @@ class Auth extends MY_Controller {
                         case "member":
                             redirect('Member/index');
                             break;
-                        
+
                         default:
                             break;
                     }
-                    
                 } else {
                     $msg_error = 'ชื่อหรือรหัสผ่านไม่ถูกต้อง';
                 }
@@ -100,7 +99,7 @@ class Auth extends MY_Controller {
             redirect('Auth/login');
         }
     }
-    
+
     public function doregister() {
         $this->form_validation->set_rules('username', 'ชื่อผู้ใช้', 'trim|required');
         $this->form_validation->set_rules('password', 'รหัสผ่าน', 'required');
@@ -109,12 +108,12 @@ class Auth extends MY_Controller {
         $this->form_validation->set_rules('ib', 'เลขบัญชี', 'trim|required');
         $this->form_validation->set_rules('ggp', 'Google+', 'trim|required');
         $this->form_validation->set_rules('fbname', 'Facebook', 'trim|required');
-        
+
         $this->form_validation->set_message('required', 'คุณต้องกรอก %s');
-        
+
         if ($this->input->post()) {
             $input = $this->input;
-            
+
             $userData = array(
                 'username' => $input->post('username'),
                 'password' => $input->post('password'),
@@ -125,10 +124,10 @@ class Auth extends MY_Controller {
                 'fb_name' => $input->post('fbname'),
                 'join_date' => date('Y-m-d'),
             );
-            
+
             if ($this->form_validation->run()) {
                 if ($this->userm->insert($userData)) {
-                    $this->userm->update(array('status'=>1), "ib = '$userData[member_ib]'", 'ib_vip');
+                    $this->userm->update(array('status' => 1), "ib = '$userData[member_ib]'", 'ib_vip');
                     redirect('Auth/login');
                 } else {
                     $msg_error = 'สมัครสมาชิกไม่สำเร็จ';
@@ -146,6 +145,31 @@ class Auth extends MY_Controller {
     public function logout() {
         $this->session->sess_destroy();
         redirect('Main');
+    }
+
+    public function facebook() {
+        $fb_config = array(
+            'appId' => '1615988941971351',
+            'secret' => '80ba14f0e1e16a83ca542bb051c008ea'
+        );
+        $this->load->library('facebook', $fb_config);
+        $user = $this->facebook->getUser();
+
+        if ($user) {
+            try {
+                $data['user_profile'] = $this->facebook->api('/me');
+            } catch (FacebookApiException $e) {
+                $user = null;
+            }
+        }
+
+        if ($user) {
+            $data['logout_url'] = $this->facebook->getLogoutUrl();
+        } else {
+            $data['login_url'] = $this->facebook->getLoginUrl();
+        }
+
+        $this->load->view('facebook', $data);
     }
 
 }
